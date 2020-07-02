@@ -1,0 +1,59 @@
+<div class="container margin-top-lg">
+  <div class="search-form">
+  <form>
+  <div class="row">
+    <div class="col-4">
+      <label for="selectedUnits">Select unit</label>
+      <select class="form-control" name="selectedUnits" [(ngModel)]="weatherService.selectedUnits">
+        <option value="C">Celsius</option>
+        <option value="F">Fahrenheit</option>
+        <option value="K">Kelvin</option>
+      </select>
+    </div>
+
+    <div class="col-4">
+      <label for="searchCity">Search City</label>
+      <input type="text" class="form-control" name="selectedName" placeholder="Enter city.." [(ngModel)]="selectedName" (ngModelChange)="updateCities()">
+    </div>
+    <div class="col-4">
+    <label for="selectedCity" *ngIf="selectedName.length > 0">Select City</label>
+      <select *ngIf="selectedName.length > 0" class="form-control" name="selectedCity" [(ngModel)]="selectedCity.id" (ngModelChange)="addCity(selectedCity.id)">
+        <option value="undefined" hidden disabled>Select a city to add</option>
+        <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+      </select>
+    </div>
+    </div>
+
+  </form>
+  </div>
+  <div class="card-deck card-container">
+    <div *ngIf='weatherPackets' class="row">
+      <div class=".col-lg-3 .col-md-4 .col-sm-12" style="width: 17rem; margin: 1.5rem 0rem;" *ngFor='let packet of weatherPackets'>
+        <div class="card text-center">
+          <div class="card-body">
+            <a [routerLink]="['/city', packet.id]">
+              <h5 class="card-title">{{packet.name}}</h5>
+            </a>
+            <h1>{{packet.main.temp | convertTemp: weatherService.selectedUnits}}</h1>
+            <img src="http://openweathermap.org/img/w/{{packet.weather[0].icon}}.png">
+            <div>{{packet.weather[0].main}}</div>
+            <hr>
+            <div class="row justify-content-center margin-top-s">
+              <div class="low-temp">
+                <div>{{packet.main.temp_min | convertTemp: weatherService.selectedUnits}}</div>
+                <div>Low</div>
+              </div>
+              <div class="high-temp" style="margin-left: 10px;">
+                <div>{{packet.main.temp_max | convertTemp: weatherService.selectedUnits}}</div>
+                <div>High</div>
+              </div>
+            </div>
+            <div class="row justify-content-center margin-top-s">
+              <button class="btn btn-danger mr-2 mb-2" (click)="deleteCity(packet.id)">Delete City</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
